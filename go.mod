@@ -8,12 +8,12 @@ require (
 	github.com/ghodss/yaml v1.0.0
 	github.com/gofrs/flock v0.8.0
 	github.com/pkg/errors v0.9.1
-	gopkg.in/yaml.v2 v2.3.0
+	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c
-	helm.sh/helm/v3 v3.5.3
-	k8s.io/api v0.20.5
-	k8s.io/apimachinery v0.20.5
-	k8s.io/client-go v0.20.5
+	helm.sh/helm/v3 v3.6.1
+	k8s.io/api v0.21.0
+	k8s.io/apimachinery v0.21.0
+	k8s.io/client-go v0.21.0
 
 )
 
