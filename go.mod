@@ -22,4 +22,5 @@ replace (
         github.com/docker/docker => github.com/moby/moby v17.12.0-ce-rc1.0.20200618181300-9dc6525e6118+incompatible
         github.com/opencontainers/runc => github.com/opencontainers/runc v1.0.3
         github.com/opencontainers/image-spec => github.com/opencontainers/image-spec v1.0.2
+        github.com/distribution/distribution/v3 => github.com/distribution/distribution/v3 v3.0.0
 )
