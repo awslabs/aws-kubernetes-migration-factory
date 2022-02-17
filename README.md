@@ -81,7 +81,7 @@ For windows ```CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o ./bin/windows
 
 For mac ```go build -o ./bin/mac/kmf``` since it was compiled on a mac machine.
 
-For more infor you may refer [cross-compiling made easy with Golang](https://opensource.com/article/21/1/go-cross-compiling) documentation
+For more information you may refer [cross-compiling made easy with Golang](https://opensource.com/article/21/1/go-cross-compiling) documentation
 
 2. Optional: Add the tool to your OS PATH
 
