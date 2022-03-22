@@ -67,10 +67,10 @@ Kubernetes Migration Factory (KMF) tool can be used to migrate Kubernetes resour
 **Use an already build binary:**
  **Steps:**
 
-1. Download KMF CLI for your os from the following url [TO COME] to your workstation where you have authenticated to both source and destination clusters. There are compiled binaries for Mac OS, Linux and Windows within the [bin](./bin) directory of the repository. 
-* For Mac OS, the binary is available in [bin/mac/kmf](./bin/mac/kmf)
-* For Linux OS, the binary is available in [bin/linux/kmf](./bin/linux/kmf)
-* For Windows OS, the binary is available in [bin/windows/kmf](./bin/windows/kmf.exe)
+1. Download KMF CLI for your os from the release section to your workstation where you have authenticated to both source and destination clusters. There are compiled binaries for Mac OS, Linux and Windows operating system. 
+* For Mac OS, the binary name is kmf_mac. This document is narrated to reference binary by the name kmf, hence edit the commands accrodingly.
+* For Linux OS, the binary name is kmf.
+* For Windows OS, the binary name kmf.exe. This document is narrated to reference binary by the name kmf, hence edit the commands accrodingly.
 
 **Note**: The compiled binaries for 64 bit executables with GOARCH=amd64
 go build commands used are as below for compilation: 
