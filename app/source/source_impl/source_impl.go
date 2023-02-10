@@ -158,6 +158,7 @@ func Resource_trim_fields(resource_type string, resource *resource.Resources, re
 			item.Generation = 0
 			item.CreationTimestamp = metav1.Time{}
 			item.Spec.ClusterIP = ""
+			item.Spec.ClusterIPs = nil
 			for port, _ := range item.Spec.Ports {
 				item.Spec.Ports[port].NodePort = 0
 			}
