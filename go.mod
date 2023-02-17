@@ -12,7 +12,7 @@ require (
 	github.com/bugsnag/bugsnag-go v2.2.0+incompatible // indirect
 	github.com/containerd/continuity v0.0.0-20201208142359-180525291bb7 // indirect
 	github.com/docker/libtrust v0.0.0-20160708172513-aabc10ec26b7 // indirect
-	github.com/emicklei/go-restful v2.9.5+incompatible // indirect
+	github.com/emicklei/go-restful v2.16.0+incompatible // indirect
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-gorp/gorp/v3 v3.1.0 // indirect
 	github.com/gofrs/flock v0.8.1
