@@ -14,8 +14,8 @@ require (
 	github.com/docker/libtrust v0.0.0-20160708172513-aabc10ec26b7 // indirect
 	github.com/emicklei/go-restful v2.9.5+incompatible // indirect
 	github.com/ghodss/yaml v1.0.0
+	github.com/go-gorp/gorp/v3 v3.1.0 // indirect
 	github.com/gofrs/flock v0.8.1
-	github.com/mattn/go-isatty v0.0.4 // indirect
 	github.com/opencontainers/runc v0.1.1 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/yvasiyarov/go-metrics v0.0.0-20150112132944-c25f46c4b940 // indirect
