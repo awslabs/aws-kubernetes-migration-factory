@@ -84,11 +84,10 @@ func (g AKS) GetSourceDetails(sCluster *cluster.Cluster) resource.Resources {
 		fmt.Println("......HelmList......", resources.HelmList)
 		fmt.Println("......JobList......", resources.JobList)
 	}
-
 	return resources
 }
 
-// AKS FormatSourceData implements the Geometry interface
+// GCP FormatSourceData implements the Geometry interface
 func (g AKS) FormatSourceData(resource *resource.Resources, resToInclude []string) {
 	fmt.Println("AKS FormatSourceData....start")
 	source_impl.Resource_trim_fields("Namespace", resource, resToInclude)
@@ -112,3 +111,4 @@ func (g AKS) FormatSourceData(resource *resource.Resources, resToInclude []strin
 	source_impl.Resource_trim_fields("Ingress", resource, resToInclude)
 	fmt.Println("AKS FormatSourceData....End")
 }
+
