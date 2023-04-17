@@ -16,7 +16,6 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
- 
 package main
 
 import (
@@ -26,22 +25,22 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
-	"path/filepath"
 	"os"
+	"path/filepath"
 	"strings"
 	"unicode"
 
-	"gopkg.in/yaml.v3"
 	"github.com/bigkevmcd/go-configparser"
+	"gopkg.in/yaml.v3"
 
-	gke "containers-migration-factory/app/source/gke"
-	aks "containers-migration-factory/app/source/aks"
-	kops "containers-migration-factory/app/source/kops"
 	cluster "containers-migration-factory/app/cluster"
-	source "containers-migration-factory/app/source"
 	resource "containers-migration-factory/app/resource"
-	eks "containers-migration-factory/app/target/eks"
+	source "containers-migration-factory/app/source"
+	aks "containers-migration-factory/app/source/aks"
+	gke "containers-migration-factory/app/source/gke"
+	kops "containers-migration-factory/app/source/kops"
 	target "containers-migration-factory/app/target"
+	eks "containers-migration-factory/app/target/eks"
 )
 
 type Config struct {
@@ -51,15 +50,14 @@ type Config struct {
 var config Config
 
 func fileExists(path string) bool {
-    _, err := os.Stat(path)
-    return !os.IsNotExist(err)
+	_, err := os.Stat(path)
+	return !os.IsNotExist(err)
 }
 
 func Get_user_input(reader *bufio.Reader) (cluster.Cluster, cluster.Cluster, string, string) {
 	sourceCluster := cluster.Cluster{}
 	destCluster := cluster.Cluster{}
 
-	
 	namespaces_param := ""
 	resources_param := ""
 	helm_path_param := ""
@@ -72,23 +70,23 @@ func Get_user_input(reader *bufio.Reader) (cluster.Cluster, cluster.Cluster, str
 	migrate_images_param := ""
 	reg_names_param := ""
 
-	if fileExists("config.ini"){
+	if fileExists("config.ini") {
 		configParams, err := configparser.NewConfigParserFromFile("config.ini")
 		if err != nil {
 			fmt.Printf("Error opening the config file for parameters: %v\n", err)
 		} else {
 			// get common section
 			common_options, err := configParams.Items("COMMON")
-			if err == nil{
+			if err == nil {
 				namespaces_param = common_options["NAMESPACES"]
 				resources_param = common_options["RESOURCES"]
 				helm_path_param = common_options["HELM_CHARTS_PATH"]
 				action_param = common_options["ACTION"]
 			}
-			
+
 			// get source section
 			source_options, err := configParams.Items("SOURCE")
-			if err == nil{
+			if err == nil {
 				source_kubeconfig_param = source_options["KUBE_CONFIG"]
 				source_context_param = source_options["CONTEXT"]
 				src_cloud = source_options["CLOUD"]
@@ -96,7 +94,7 @@ func Get_user_input(reader *bufio.Reader) (cluster.Cluster, cluster.Cluster, str
 
 			// get target section
 			target_options, err := configParams.Items("TARGET")
-			if err == nil{
+			if err == nil {
 				destination_kubeconfig_param = target_options["KUBE_CONFIG"]
 				destination_context_param = target_options["CONTEXT"]
 				// target_cloud := target_options["CLOUD"]
@@ -104,13 +102,13 @@ func Get_user_input(reader *bufio.Reader) (cluster.Cluster, cluster.Cluster, str
 
 			// get image migration section
 			migrate_image_options, err := configParams.Items("MIGRATE_IMAGES")
-			if err == nil{
-					migrate_images_param = migrate_image_options["USERCONSENT"]
-					reg_names_param = migrate_image_options["REGISTRY"]
+			if err == nil {
+				migrate_images_param = migrate_image_options["USERCONSENT"]
+				reg_names_param = migrate_image_options["REGISTRY"]
 			}
 
 		}
-	} else{
+	} else {
 		fmt.Printf("Config.ini file doesn't exist and will use the user arguments\n")
 	}
 	//// Accept Source Cluster input
@@ -141,7 +139,7 @@ func Get_user_input(reader *bufio.Reader) (cluster.Cluster, cluster.Cluster, str
 		fmt.Printf("Please pass the source context (default: %v): ", current_src_context)
 		*source_context, _ = reader.ReadString('\n')
 	}
-	sourceCluster.SetContext( strings.TrimSuffix(*source_context, "\n") )
+	sourceCluster.SetContext(strings.TrimSuffix(*source_context, "\n"))
 
 	if *resources == "" {
 		fmt.Printf("Please pass comma separated list of resources to migrate from source cluster to destination cluster. For all resources enter 'all': ")
@@ -158,12 +156,12 @@ func Get_user_input(reader *bufio.Reader) (cluster.Cluster, cluster.Cluster, str
 		*helm_path, _ = reader.ReadString('\n')
 	}
 
-	sourceCluster.SetHelm_path ( strings.TrimSuffix(*helm_path, "\n") )
-	destCluster.SetHelm_path ( strings.TrimSuffix(*helm_path, "\n") )
+	sourceCluster.SetHelm_path(strings.TrimSuffix(*helm_path, "\n"))
+	destCluster.SetHelm_path(strings.TrimSuffix(*helm_path, "\n"))
 
 	// Remove the newline character from the end of filepath entered by user
-	sourceCluster.SetKubeconfig_path ( strings.TrimSuffix(*source_kubeconfig, "\n") )
-	sourceCluster.SetContext ( strings.TrimSuffix(*source_context, "\n") )
+	sourceCluster.SetKubeconfig_path(strings.TrimSuffix(*source_kubeconfig, "\n"))
+	sourceCluster.SetContext(strings.TrimSuffix(*source_context, "\n"))
 
 	// Migrate Images from source container registry to ECR
 	if *migrate_images == "" {
@@ -172,7 +170,7 @@ func Get_user_input(reader *bufio.Reader) (cluster.Cluster, cluster.Cluster, str
 	}
 
 	// Remove the newline character from the end of filepath entered by user
-	sourceCluster.SetMigrate_Images ( strings.TrimSuffix(*migrate_images, "\n"))
+	sourceCluster.SetMigrate_Images(strings.TrimSuffix(*migrate_images, "\n"))
 
 	if sourceCluster.GetMigrate_Images() == "Yes" || sourceCluster.GetMigrate_Images() == "yes" {
 		if *reg_names == "" {
@@ -186,14 +184,20 @@ func Get_user_input(reader *bufio.Reader) (cluster.Cluster, cluster.Cluster, str
 		if regitem == "GCR" || regitem == "gcr" {
 			regurl := []string{"asia.gcr.io", "eu.gcr.io", "gcr.io", "marketplace.gcr.io", "staging-k8s.gcr.io", "us.gcr.io"}
 			for _, gcreg := range regurl {
-				sourceCluster.SetRegistry_Names ( strings.TrimSuffix(gcreg, "\n"))
+				sourceCluster.SetRegistry_Names(strings.TrimSuffix(gcreg, "\n"))
 			}
 		} else if regitem == "DOCKERHUB" || regitem == "dockerhub" {
 			regurl := "dockerhub"
-			sourceCluster.SetRegistry_Names ( strings.TrimSuffix(regurl, "\n"))
+			sourceCluster.SetRegistry_Names(strings.TrimSuffix(regurl, "\n"))
 		} else if regitem == "gitlab" || regitem == "GITLAB" {
 			regurl := "registry.gitlab.com"
-			sourceCluster.SetRegistry_Names ( strings.TrimSuffix(regurl, "\n"))
+			sourceCluster.SetRegistry_Names(strings.TrimSuffix(regurl, "\n"))
+		} else if regitem == "mcr" || regitem == "MCR" {
+			regurl := "mcr.microsoft.com"
+			sourceCluster.SetRegistry_Names(strings.TrimSuffix(regurl, "\n"))
+		} else {
+			fmt.Println("Invalid registry name passed, exiting")
+			os.Exit(4)
 		}
 	}
 
@@ -203,13 +207,13 @@ func Get_user_input(reader *bufio.Reader) (cluster.Cluster, cluster.Cluster, str
 		os.Exit(4)
 	}
 	if *namespaces != "all" {
-		sourceCluster.SetNamespaces ( strings.Split(stripSpaces(*namespaces), ",") )
+		sourceCluster.SetNamespaces(strings.Split(stripSpaces(*namespaces), ","))
 	}
 
 	*resources = strings.TrimSuffix(*resources, "\n")
 	if *resources != "" {
-		sourceCluster.SetResources ( strings.Split(stripSpaces(*resources), ",") )
-		destCluster.SetResources ( sourceCluster.GetResources() )
+		sourceCluster.SetResources(strings.Split(stripSpaces(*resources), ","))
+		destCluster.SetResources(sourceCluster.GetResources())
 	}
 
 	// DESTINATION ==============
@@ -240,18 +244,16 @@ func Get_user_input(reader *bufio.Reader) (cluster.Cluster, cluster.Cluster, str
 
 	// fmt.Println("Action", *action)
 
-	
-	
 	if *sourceType == "" {
 		fmt.Print("Please pass source type  (supported source types GKE,AKS,KOPS): ")
 		*sourceType, _ = reader.ReadString('\n')
 		*sourceType = strings.TrimRight(*sourceType, "\n")
 	}
 
-	destCluster.SetKubeconfig_path ( strings.TrimSuffix(*destination_kubeconfig, "\n") )
-	destCluster.SetContext ( strings.TrimSuffix(*destination_context, "\n") )
+	destCluster.SetKubeconfig_path(strings.TrimSuffix(*destination_kubeconfig, "\n"))
+	destCluster.SetContext(strings.TrimSuffix(*destination_context, "\n"))
 
-	return sourceCluster, destCluster , *action, *sourceType
+	return sourceCluster, destCluster, *action, *sourceType
 }
 
 // Get default cluster in config
@@ -301,24 +303,24 @@ func main() {
 	k := new(kops.KOPS)
 	t := new(eks.EKS)
 	var sourceResources resource.Resources
-	target.SetContext(t,&destCluster)
+	target.SetContext(t, &destCluster)
 
-	if sourceType == "GKE"  {
+	if sourceType == "GKE" {
 		fmt.Println("GKE Resources")
-		source.SetContext(g,&sourceCluster)
-		sourceResources = source.Invoke( g , sourceType, &sourceCluster, &destCluster)
+		source.SetContext(g, &sourceCluster)
+		sourceResources = source.Invoke(g, sourceType, &sourceCluster, &destCluster)
 		// fmt.Println(sourceResources)
 	} else if sourceType == "AKS" {
-		source.SetContext(a,&sourceCluster)
-		sourceResources = source.Invoke(a , sourceType, &sourceCluster, &destCluster )
+		source.SetContext(a, &sourceCluster)
+		sourceResources = source.Invoke(a, sourceType, &sourceCluster, &destCluster)
 		// fmt.Println(sourceResources)
 	} else if sourceType == "KOPS" {
-		source.SetContext(k,&sourceCluster)
-		sourceResources = source.Invoke(k, sourceType, &sourceCluster, &destCluster )
+		source.SetContext(k, &sourceCluster)
+		sourceResources = source.Invoke(k, sourceType, &sourceCluster, &destCluster)
 		// fmt.Println(sourceResources)
-	} else{
+	} else {
 		fmt.Println("Invalid input for parameter \"sourceType\", accepted values are GKE,AKE,KOPS")
 		os.Exit(1)
 	}
-	target.Invoke(t,sourceType, &sourceCluster, &destCluster,&sourceResources, action)
+	target.Invoke(t, sourceType, &sourceCluster, &destCluster, &sourceResources, action)
 }
