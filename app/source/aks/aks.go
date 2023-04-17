@@ -21,7 +21,6 @@ package aks
 import (
 	cluster "containers-migration-factory/app/cluster"
 	resource "containers-migration-factory/app/resource"
-	"containers-migration-factory/app/source/source_impl"
 	"fmt"
 )
 
@@ -46,8 +45,8 @@ func (g AKS) GetSourceDetails(sCluster *cluster.Cluster) resource.Resources {
 	source_impl.Generate_cronjob_config(sCluster, &resources)
 	source_impl.Generate_secret_config(sCluster, &resources)
 	source_impl.Generate_configmap_config(sCluster, &resources)
-	//source_impl.Generate_mutatingwebhook_config(sCluster, &resources)
-	//source_impl.Generate_validatingwebhook_config(sCluster, &resources)
+	source_impl.Generate_mutatingwebhook_config(sCluster, &resources)
+	source_impl.Generate_validatingwebhook_config(sCluster, &resources)
 	source_impl.Generate_ingress_config(sCluster, &resources)
 	source_impl.Generate_storage_class_config(sCluster, &resources)
 	source_impl.Generate_pvc_config(sCluster, &resources)
@@ -80,8 +79,8 @@ func (g AKS) GetSourceDetails(sCluster *cluster.Cluster) resource.Resources {
 		fmt.Println("......SvcAccList......", resources.SvcAccList)
 		fmt.Println("......CronJobList......", resources.CronJobList)
 		fmt.Println("......PersistentVolumeClaimsList......", resources.PersistentVolumeClaimsList)
-		//fmt.Println("......MutatingWebhookConfigurationList......", resources.MutatingWebhookConfigurationList)
-		//fmt.Println("......ValidatingWebhookConfigurationList......", resources.ValidatingWebhookConfigurationList)
+		fmt.Println("......MutatingWebhookConfigurationList......", resources.MutatingWebhookConfigurationList)
+		fmt.Println("......ValidatingWebhookConfigurationList......", resources.ValidatingWebhookConfigurationList)
 		fmt.Println("......HelmList......", resources.HelmList)
 		fmt.Println("......JobList......", resources.JobList)
 	}
@@ -93,7 +92,7 @@ func (g AKS) FormatSourceData(resource *resource.Resources, resToInclude []strin
 	fmt.Println("AKS FormatSourceData....start")
 	source_impl.Resource_trim_fields("Namespace", resource, resToInclude)
 	source_impl.Resource_trim_fields("DaemonSet", resource, resToInclude)
-	//source_impl.Resource_trim_fields("MutatingWebhookConfiguration", resource, resToInclude)
+	source_impl.Resource_trim_fields("MutatingWebhookConfiguration", resource, resToInclude)
 	source_impl.Resource_trim_fields("Deployment", resource, resToInclude)
 	source_impl.Resource_trim_fields("Service", resource, resToInclude)
 	source_impl.Resource_trim_fields("Secrets", resource, resToInclude)
@@ -112,3 +111,4 @@ func (g AKS) FormatSourceData(resource *resource.Resources, resToInclude []strin
 	source_impl.Resource_trim_fields("Ingress", resource, resToInclude)
 	fmt.Println("AKS FormatSourceData....End")
 }
+
