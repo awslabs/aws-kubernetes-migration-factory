@@ -194,6 +194,12 @@ func Get_user_input(reader *bufio.Reader) (cluster.Cluster, cluster.Cluster, str
 		} else if regitem == "gitlab" || regitem == "GITLAB" {
 			regurl := "registry.gitlab.com"
 			sourceCluster.SetRegistry_Names ( strings.TrimSuffix(regurl, "\n"))
+		} else if regitem == "mcr" || regitem == "MCR" {
+			regurl := "mcr.microsoft.com"
+			sourceCluster.SetRegistry_Names(strings.TrimSuffix(regurl, "\n"))
+		} else {
+			fmt.Println("Invalid registry name passed, exiting")
+			os.Exit(4)
 		}
 	}
 

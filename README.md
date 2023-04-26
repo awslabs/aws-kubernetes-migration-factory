@@ -1,6 +1,6 @@
 # Kubernetes Migration Factory User Guide
 
-Kubernetes Migrations Factory (KMF) is a tool developed for migrating docker containers to Amazon EKS. KMF is written in [Golang](https://golang.org/) and offers command line interface. The Kubernetes Migration Factory solution is an orchestration platform for migrating containers to Amazon EKS at
+Kubernetes Migrations Factory (KMF) is a tool developed for migrating Kubernetes workloads to Amazon EKS. KMF is written in [Golang](https://golang.org/) and offers command line interface. The Kubernetes Migration Factory solution is an orchestration platform for migrating containers to Amazon EKS at
 scale. It is designed to coordinate and automate many of the manual processes, eliminating human error and speeding migration phases down to minutes from weeks of planning and data collection. With just a few inputs provided to the KMF command line interface(CLI), customers will be able to set, launch, and track the migration plan for their current container platform configuration into Amazon EKS. This solution is able to scan the source platform and generate a blueprint of the running workload. After the scan is done, you can also see list of all the Kubernetes resources that will be created onthe destination. This solution is built to understand the source platform implementation details and then manipulate the obtained manifest files such that it is valid and accepted by the destination Kubernetes implementation, Amazon EKS. It is able to provide recommendations to add relevant AWS native services by determining the type of services used in the source and finding a similar type of AWS resources. The solution will enable the customer with autonomous recommendation for their data plane setup based on their current cluster meta data.
 
 ### **Architecture**
@@ -19,7 +19,7 @@ Kubernetes Migration Factory (KMF) tool can be used to migrate Kubernetes resour
 * Download `KMF` for your platform from here [TO COME]. If your platform is not among the available releases, you can install GoLang and setup the workspace. Please refer [Download and Install](https://golang.org/doc/install) for more information about installing golang to your workstation
 * Amazon EKS Cluster used as destination for migrating the Kubernetes workload should have access to the docker registry used in the source. You may follow the documentation [Pull an Image from a Private Registry
 ](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/). If you create the secret for private registry access in the source kubernetes cluster and also attach to all the container specifications in all resources, kubernetes migration factory will migrate that as well
-* KMF tool also helps to migrate images from 3rd party repositories such as GCR, Dockerhub, Gitlab private registry to Amazon Elastic Container Registry. On the workstation where the KMF CLI will be used, ensure to setup docker login for Amazon ECR and also add docker login to list of supported repositories (GCR, Gitlab, Dockerhub) that are intended for migration prior to executing KMF
+* KMF tool also helps to migrate images from 3rd party repositories such as GCR, Dockerhub, Gitlab private registry to Amazon Elastic Container Registry. On the workstation where the KMF CLI will be used, ensure to setup docker login for Amazon ECR and also add docker login to list of supported repositories (GCR, Gitlab, MCR, Dockerhub) that are intended for migration prior to executing KMF
 * KMF tool uses aws privileges assigned to the execution id in order to create Amazon elastic container registry and push images to it. The following IAM policy statement is the minimum required permission
 
         {
@@ -147,7 +147,7 @@ CONTEXT=<Kube-Context-Name>
 # This section is used for passing values to the KMF CLI to perform container registry images migration to Amazon ECR and this is optional
 # Do you wish to migrate images from 3rd party repositories to Amazon Elastic Container Registry? Supply either "Yes" or "No"
 USERCONSENT=Yes
-# Comma separated list of 3rd party registries. Tool supports migration from gcr, gitlab, dockerhub registries.
+# Comma separated list of 3rd party registries. Tool supports migration from gcr, gitlab, mcr, dockerhub registries.
 REGISTRY=GCR
 ```
 ### **Explanation of each supported parameter for the KMF CLI tool**
@@ -215,7 +215,7 @@ Please pass comma separated list of resources to migrate from source cluster to 
 Please pass comma separated list of namespaces for source cluster. For all namespaces enter 'all': 
 Please pass path to save Helm charts from source cluster:
 Do you want to migrate images from 3rd party registries to ECR? Supply either Yes or No: 
-Tool supports migration from gcr, gitlab, dockerhub registries. Please pass comma separated list of 3rd party registries: 
+Tool supports migration from gcr, gitlab, mcr, dockerhub registries. Please pass comma separated list of 3rd party registries: 
 Please pass the location of destination EKS cluster kubeconfig file: <destination kubeconfig file location>
 Please pass the destination context (default: <current-context>): <Leave Blank for default or destination context>
 Please pass what action the tool needs to perform. Accepted values are Deploy or Delete :
@@ -232,7 +232,7 @@ $ ./bin/kmf --source_kubeconfig  /Users/<user-name>/.kube/gcp.config \
 --namespaces "all" \
 --resources "all" \
 --migrate_images "yes" \
---reg_names "gcr, dockerhub, gitlab" \
+--reg_names "gcr, dockerhub, mcr, gitlab" \
 --source_context <source_kubernetes_context> \  
 --destination_context <destination_kubernetes_context> \
 --helm_path <local-file-system-path> \
@@ -246,7 +246,7 @@ $ ./bin/kmf --source_kubeconfig /Users/<user-name>/.kube/gcp.config \
 --namespaces "default" \
 --resources "all" \
 --migrate_images "yes" \
---reg_names "gcr, dockerhub, gitlab" \
+--reg_names "gcr, dockerhub, gitlab, mcr" \
 --source_context <source_kubernetes_context> \ 
 --destination_context <destination_kubernetes_context> \
 --helm_path <local-file-system-path> \
@@ -261,7 +261,7 @@ $ ./bin/kmf --source_kubeconfig  \
 --namespaces "dev,default" \
 --resources "deployment,service" \
 --migrate_images "yes" \
---reg_names "gcr, dockerhub, gitlab" \
+--reg_names "gcr, dockerhub, gitlab, mcr" \
 --source_context <source_kubernetes_context>  \
 --destination_context <destination_kubernetes_context> \
 --helm_path <local-file-system-path> \
@@ -275,7 +275,7 @@ $ ./bin/kmf --source_kubeconfig /Users/<user-name>/.kube/gcp.config \
 --namespaces "all" \
 --resources "deployment,service" \
 --migrate_images "yes" \
---reg_names "gcr, dockerhub, gitlab" \
+--reg_names "gcr, dockerhub, gitlab, mcr" \
 --source_context <source_kubernetes_context>  \
 --destination_context <destination_kubernetes_context> \
 --helm_path <local-file-system-path> \
