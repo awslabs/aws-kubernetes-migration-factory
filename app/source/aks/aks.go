@@ -21,6 +21,7 @@ package aks
 import (
 	cluster "containers-migration-factory/app/cluster"
 	resource "containers-migration-factory/app/resource"
+	source_impl "containers-migration-factory/app/source/source_impl"
 	"fmt"
 )
 
@@ -111,4 +112,3 @@ func (g AKS) FormatSourceData(resource *resource.Resources, resToInclude []strin
 	source_impl.Resource_trim_fields("Ingress", resource, resToInclude)
 	fmt.Println("AKS FormatSourceData....End")
 }
-
